@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Explore the Provinces of Canada</title>
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Navbar container */
+        .navbar {
+            overflow: hidden;
+            background-color: rgb(0, 0, 0);
+            font-family: Arial;
+        }
+
+        /* Links inside the navbar */
+        .navbar a {
+            float: left;
+            font-size: 12px;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        /* Adds a grey background color to navbar links on hover */
+        .navbar a:hover,
+        .dropdown:hover .dropbtn {
+            background-color: rgb(48, 48, 48);
+        }
+    </style>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.18/"></script>
+
+    <script>
+        /* Display a Map Module */
+        require(["esri/config", "esri/Map", "esri/views/MapView"], function (esriConfig, Map, MapView) {
+
+            esriConfig.apiKey = "AAPK1e8cb35859ff468ea471f2bbf63247beZcov5emj7qTv8ak5tfikBGhjMHPIe4tGhNjSVho_WLEXk0R7pfMs8uDSvgV7dS9U";
+
+            const map = new Map({
+                basemap: "arcgis-topographic" // Basemap layer service
+            });
+
+            const view = new MapView({
+                map: map,
+                center: [-98.09119192374854, 63.056668678057264], // Longitude, latitude
+                zoom: 4, // Zoom level
+                container: "viewDiv" // Div element
+            });
+
+            /* Display a Feture Module */
+            require([
+                "esri/config",
+                "esri/Map",
+                "esri/views/MapView",
+
+                "esri/layers/FeatureLayer"
+
+            ], function (esriConfig, Map, MapView, FeatureLayer) {
+
+            });
+
+            /* Adding Feature Layer */
+            const CanadaJeshobbi = new FeatureLayer({
+                url: "https://luna.flemingcollege.ca/arcgis/rest/services/Geom99lab1/JeshobbiCanada/MapServer/0"
+            });
+
+            map.add(CanadaJeshobbi, 0);
+
+        });
+    </script>
+</head>
+
+<body>
+    <!--Map Div-->
+    <div id="viewDiv"></div>
+</body>
+
+</html>
