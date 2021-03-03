@@ -1,73 +1,80 @@
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Swipe Widget | Sample | ArcGIS API for JavaScript 4.18</title>
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Explore Canada's Provinces</title>
-    <style>
-        html,
-        body,
-        #viewDiv {
-            padding: 0;
-            margin: 0;
-            height: 100%;
-            width: 100%;
-        }
-    </style>
-    </style>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/light/main.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/dark/main.css" />
     <script src="https://js.arcgis.com/4.18/"></script>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
 
     <script>
-        require([
-            "esri/config",
-            "esri/Map",
-            "esri/views/MapView",
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+        "esri/widgets/LayerList",
+        "esri/widgets/Swipe",
+        "esri/widgets/Expand"
+      ], function(Map, MapView, FeatureLayer, LayerList, Swipe, Expand) {
 
-            "esri/layers/FeatureLayer"
-
-        ], function (esriConfig, Map, MapView, FeatureLayer) {
-
-            esriConfig.apiKey = "AAPK1e8cb35859ff468ea471f2bbf63247beZcov5emj7qTv8ak5tfikBGhjMHPIe4tGhNjSVho_WLEXk0R7pfMs8uDSvgV7dS9U";
-
-            const map = new Map({
-                basemap: "national-geographic"
-            });
-
-            const view = new MapView({
-                container: "viewDiv",
-                map: map,
-                center: [-98.09119192374854, 64.056668678057264],
-                zoom: 4
-            });
-
-            //Trailheads feature layer (points)
-            const CanadaJeshobbiLayer = new FeatureLayer({
-                url: "https://luna.flemingcollege.ca/arcgis/rest/services//Geom99lab1/JeshobbiCanada/MapServer/0"
-            });
-
-            map.add(CanadaJeshobbiLayer);
-
-            view.on("pointer-move", function (event) {
-                // only include graphics from hurricanesLayer in the hitTest
-                const opts = {
-                    include: CanadaJeshobbiLayer
-                }
-                view.hitTest(event, opts).then(function (response) {
-                    // check if a feature is returned from the hurricanesLayer
-                    if (response.results.length) {
-                        const graphic = response.results[0].graphic;
-                        // do something with the graphic
-                    }
-                });
-            });
+        const map = new Map({
+          basemap: "gray"
         });
+
+        const CanadaJeshobbiLayer = new FeatureLayer({
+          url: "https://luna.flemingcollege.ca/arcgis/rest/services//Geom99lab1/JeshobbiCanada/MapServer/0"
+        });
+        map.add(CanadaJeshobbiLayer);
+
+        const PopulationLayer = new FeatureLayer({
+          url: "https://edumaps.esri.ca/arcgis/rest/services/Demographics/Population_Density/MapServer/2",
+
+        });
+        map.add(infrared);
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 4,
+          center: [-98.09119192374854, 64.056668678057264], // longitude, latitude
+        });
+
+        // create a layerlist and expand widget and add to the view
+        const layerList = new LayerList({
+          view: view
+        });
+        const llExpand = new Expand({
+          view: view,
+          content: layerList,
+          expanded: false
+        });
+        view.ui.add(llExpand, "top-right");
+
+        // create a new Swipe widget
+        const swipe = new Swipe({
+          leadingLayers: [CanadaJeshobbiLayer],
+          trailingLayers: [PopulationLayer],
+          position: 35, // set position of widget to 35%
+          view: view
+        });
+
+        // add the widget to the view
+        view.ui.add(swipe);
+      });
     </script>
+  </head>
 
-</head>
-
-<body>
+  <body>
     <div id="viewDiv"></div>
-</body>
-
+  </body>
 </html>
