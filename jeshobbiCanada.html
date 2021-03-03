@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>Swipe Widget | Sample | ArcGIS API for JavaScript 4.18</title>
+  <title>O Canada | Swipe Widget</title>
 
   <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/dark/main.css" />
   <script src="https://js.arcgis.com/4.18/"></script>
@@ -17,7 +17,7 @@
       width: 100%;
     }
 
-    /* Formatting title block */
+    /* Formatting title div */
     .title {
       padding: 10;
       text-align: center;
@@ -48,55 +48,47 @@
       "esri/widgets/LayerList",
       "esri/widgets/Swipe",
       "esri/widgets/Expand"
-    ], function (Map, MapView, FeatureLayer, LayerList, Swipe, Expand) {
+    ], function (Map, MapView, FeatureLayer, LayerList, Swipe, Expand) { // Calling necessary functions
 
+      // Creating new map with oceans basemap
       const map = new Map({
         basemap: "oceans"
       });
 
-      const infrared = new FeatureLayer({
+      // Adding Canada layer
+      const canada = new FeatureLayer({
         url: "https://luna.flemingcollege.ca/arcgis/rest/services//Geom99lab1/JeshobbiCanada/MapServer/0",
         maxScale: 3000
       });
-      map.add(infrared);
+      map.add(canada);
 
-      const nearInfrared = new FeatureLayer({
+      // Creating empty layer so that Swipe can be used with basemap
+      const empty = new FeatureLayer({
         url: "",
         maxScale: 3000
       });
-      map.add(nearInfrared);
+      map.add(empty);
 
       const view = new MapView({
         container: "viewDiv",
         map: map,
         zoom: 4,
         center: [-110.09119192374854, 55.056668678057264], // longitude, latitude
-        constraints: {
+        constraints: { // Constraints on zoom levels
           maxZoom: 17,
           minZoom: 4
         }
       });
 
-      // create a layerlist and expand widget and add to the view
-      const layerList = new LayerList({
-        view: view
-      });
-      const llExpand = new Expand({
-        view: view,
-        content: layerList,
-        expanded: false
-      });
-      view.ui.add(llExpand, "top-right");
-
-      // create a new Swipe widget
+      // Creating Swipe Widget
       const swipe = new Swipe({
-        leadingLayers: [infrared],
-        trailingLayers: [nearInfrared],
-        position: 50, // set position of widget to 35%
+        leadingLayers: [canada], // Left layer is Canada
+        trailingLayers: [empty], // Rigth layet is empty
+        position: 50, // Setting position of slider to middle of page
         view: view
       });
 
-      // add the widget to the view
+      // Adding the Swipe Widget to view
       view.ui.add(swipe);
     });
   </script>
@@ -107,9 +99,9 @@
   <div class="title">
     <h1>O Canada!</h1>
     <p>Use this interactive swipe map to orient yourself with the geography of Canada's provinces and
-      territories!<br/>
-    </br>
-      <b>Ask yourself the following questions:</b><br/>
+      territories!<br />
+      </br>
+      <b>Ask yourself the following questions:</b><br />
       What province(s) or territory(ies) border the Pacific Ocean?</br>
       What province(s) or territory(ies) border the Atlantic Ocean?</br>
       What province(s) or territory(ies) border Hudson Bay?</br>
@@ -117,6 +109,7 @@
       What is Canada's northmost province or territory?</br>
       What is Canada's southmost province or territory?</br>
   </div>
+  <!-- Map Div -->
   <div id="viewDiv"></div>
 </body>
 
